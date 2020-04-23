@@ -12,6 +12,7 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.path.xml.XmlPath;
 
+import br.com.vini.leilao.modelo.Leilao;
 import br.com.vini.leilao.modelo.Usuario;
 
 public class UsuariosWsTest {
@@ -125,6 +126,41 @@ public class UsuariosWsTest {
 			.delete("/usuarios/deleta")
 		.andReturn()
 			.asString();
+	}
+	
+	@Test
+	public void deveSalvarNovoLeiaoAndDeletar() {
+		
+		Leilao leilao1 = new Leilao(1L, "bmw", 11500.0, mauricio, true);
+		
+		XmlPath pathLeilao1 = given()
+			.header("Accept", "application/xml")
+			.contentType("application/xml")
+			.body(leilao1)
+		.expect()
+			.statusCode(200)
+		.when()
+			.post("/leiloes")
+		.andReturn()
+			.xmlPath();
+		
+		Leilao leilao = pathLeilao1.getObject("/leilao", Leilao.class);
+		
+		assertEquals("bmw", leilao.getNome());
+		
+		//deletando
+		
+		given()
+			.header("Accept", "application/xml")
+			.contentType("application/xml")
+			.body(leilao)
+		.expect()
+			.statusCode(200)
+		.when()
+			.delete("/leiloes/deletar")
+		.andReturn()
+			.asString();
+		
 	}
 
 }
