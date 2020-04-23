@@ -54,5 +54,19 @@ public class UsuariosWsTest {
 		
 		assertEquals(usuario, mauricio);
 	}
+	
+	@Test
+	public void deveRetornarQuantidadeTotalLeiloes() {
+		
+		XmlPath xmlPath = given()
+			.header("Accept", "application/xml")
+			.get("/leiloes/total")
+			.andReturn().xmlPath();
+		
+		int total = xmlPath.getInt("int");
+		
+		assertEquals(2, total);
+		
+	}
 
 }
